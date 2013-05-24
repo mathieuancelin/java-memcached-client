@@ -40,7 +40,7 @@ import net.spy.memcached.ops.OperationStatus;
  *
  * @param <T> Type of object returned from the get
  */
-public class GetFuture<T> implements Future<T> {
+public class GetFuture<T> extends CompletableFuture<T> {
 
   private final OperationFuture<Future<T>> rv;
 
@@ -49,7 +49,9 @@ public class GetFuture<T> implements Future<T> {
   }
 
   public boolean cancel(boolean ign) {
-    return rv.cancel(ign);
+    boolean cancel = rv.cancel(ign);
+    complete();
+    return cancel;
   }
 
   public T get() throws InterruptedException, ExecutionException {
@@ -69,6 +71,7 @@ public class GetFuture<T> implements Future<T> {
 
   public void set(Future<T> d, OperationStatus s) {
     rv.set(d, s);
+    complete();
   }
 
   public void setOperation(Operation to) {

@@ -30,18 +30,20 @@ import java.util.concurrent.TimeoutException;
 /**
  * A future that fires immediately.
  */
-public class ImmediateFuture implements Future<Boolean> {
+public class ImmediateFuture extends CompletableFuture<Boolean> {
   private final Boolean value;
   private final ExecutionException exception;
 
   public ImmediateFuture(Boolean returnValue) {
     value = returnValue;
     exception = null;
+    complete();
   }
 
   public ImmediateFuture(Exception e) {
     value = null;
     exception = new ExecutionException(e);
+    complete();
   }
 
   public boolean cancel(boolean mayInterruptIfRunning) {

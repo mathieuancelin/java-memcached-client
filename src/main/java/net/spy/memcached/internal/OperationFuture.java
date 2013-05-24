@@ -50,7 +50,7 @@ import net.spy.memcached.ops.OperationStatus;
  *
  * @param <T> Type of object returned from this future.
  */
-public class OperationFuture<T> extends SpyObject implements Future<T> {
+public class OperationFuture<T> extends CompletableFuture<T> {
 
   private final CountDownLatch latch;
   private final AtomicReference<T> objRef;
@@ -104,7 +104,9 @@ public class OperationFuture<T> extends SpyObject implements Future<T> {
   public boolean cancel(boolean ign) {
     assert op != null : "No operation";
     op.cancel();
-    return op.getState() == OperationState.WRITE_QUEUED;
+    boolean cancel =  op.getState() == OperationState.WRITE_QUEUED;
+    complete();
+    return cancel;
   }
 
   /**
@@ -115,7 +117,9 @@ public class OperationFuture<T> extends SpyObject implements Future<T> {
   public boolean cancel() {
     assert op != null : "No operation";
     op.cancel();
-    return op.getState() == OperationState.WRITE_QUEUED;
+    boolean cancel = op.getState() == OperationState.WRITE_QUEUED;
+    complete();
+    return cancel;
   }
 
   /**
@@ -255,6 +259,7 @@ public class OperationFuture<T> extends SpyObject implements Future<T> {
   public void set(T o, OperationStatus s) {
     objRef.set(o);
     status = s;
+    complete();
   }
 
   /**

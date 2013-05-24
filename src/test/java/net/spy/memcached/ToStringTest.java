@@ -23,6 +23,10 @@
 package net.spy.memcached;
 
 import junit.framework.TestCase;
+import net.spy.memcached.internal.CompletableFuture;
+import net.spy.memcached.internal.OperationFuture;
+
+import java.util.concurrent.Future;
 
 /**
  * These tests test to make sure that we don't get null pointer
@@ -44,4 +48,16 @@ public class ToStringTest extends TestCase {
     (new BinaryConnectionFactory(100, 1000,
         DefaultHashAlgorithm.KETAMA_HASH)).toString();
   }
+
+    public void test() throws Exception {
+        new MemcachedClient(null).add("key", 0, null).onComplete(new CompletableFuture.CompleteCallback<Boolean>() {
+            @Override
+            public void onComplete(Future<Boolean> booleanFuture) {
+                if (booleanFuture instanceof OperationFuture) {
+                    OperationFuture<Boolean> f = (OperationFuture<Boolean>) booleanFuture;
+                    f.getStatus();
+                }
+            }
+        });
+    }
 }

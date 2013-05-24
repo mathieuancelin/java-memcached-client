@@ -70,6 +70,7 @@ public class BulkGetFuture<T> extends CompletableFuture<Map<String, T>> implemen
     }
     cancelled = true;
     status = new OperationStatus(false, "Cancelled");
+    complete();
     return rv;
   }
 
@@ -155,6 +156,7 @@ public class BulkGetFuture<T> extends CompletableFuture<Map<String, T>> implemen
     for (Map.Entry<String, Future<T>> me : rvMap.entrySet()) {
       m.put(me.getKey(), me.getValue().get());
     }
+    complete();
     return m;
   }
 

@@ -23,22 +23,17 @@
 
 package net.spy.memcached.internal;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
 import net.spy.memcached.MemcachedConnection;
 import net.spy.memcached.compat.log.LoggerFactory;
 import net.spy.memcached.ops.Operation;
 import net.spy.memcached.ops.OperationState;
 import net.spy.memcached.ops.OperationStatus;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.concurrent.*;
 
 /**
  * Future for handling results from bulk gets.
@@ -47,7 +42,7 @@ import net.spy.memcached.ops.OperationStatus;
  *
  * @param <T> types of objects returned from the GET
  */
-public class BulkGetFuture<T> implements BulkFuture<Map<String, T>> {
+public class BulkGetFuture<T> extends CompletableFuture<Map<String, T>> implements BulkFuture<Map<String, T>> {
   private final Map<String, Future<T>> rvMap;
   private final Collection<Operation> ops;
   private final CountDownLatch latch;

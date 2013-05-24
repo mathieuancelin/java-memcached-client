@@ -45,7 +45,7 @@ public abstract class CompletableFuture<T> extends SpyObject implements Future<T
 
     protected void complete() {
         synchronized (this) {
-            if (!isComplete()) {
+            if (!isComplete() && !callbacks.isEmpty()) {
                 completeLatch.countDown();
             } else {
                 return;
